@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "composite": true,
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "forceConsistentCasingInFileNames": true,
+    "importHelpers": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "lib": [
+      "ES2021",
+    ],
+    "module": "ESNext",
+    "moduleResolution": "Node",
+    "noEmitHelpers": true,
+    "resolveJsonModule": true,
+    "strict": true,
+    "stripInternal": true,
+    "target": "ES2017"
+  },
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
+  },
+  "include": [
+    "**/*.ts",
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}
