@@ -1,7 +1,9 @@
 import { BadRequest, NotFound } from '../common';
 import { userRepository } from '../user/user.repository';
-import { friendRequestRepository } from './friend-request.repostiry';
-import { FriendRequestParams } from './model/friend-request.model';
+import { friendRequestRepository } from './friend-request.repository';
+import { ModifyFriendRequestParams, FriendRequestParams } from './model';
+import { db } from '../common';
+import { friendRepository } from './friend.repository';
 
 class FriendRequestService {
   async createFriendRequest({ targetUserID, userId }: FriendRequestParams) {
@@ -20,6 +22,37 @@ class FriendRequestService {
     }
 
     await friendRequestRepository.createFriendRequest({ targetUserID, userId });
+  }
+
+  async deleteRequest({ id, userId }: ModifyFriendRequestParams) {
+    const request = await friendRequestRepository.findRequest({ id });
+    if (!request) {
+      throw new NotFound();
+    }
+
+    if (request.requestor !== userId && request.target_user !== userId) {
+      throw new BadRequest();
+    }
+
+    await friendRequestRepository.deleteRequest(id);
+  }
+
+  async acceptRequest({ id, userId }: ModifyFriendRequestParams) {
+    const friendRequest = await friendRequestRepository.findRequest({ id });
+    if (!friendRequest) {
+      throw new NotFound();
+    }
+
+    if (friendRequest.target_user !== userId) {
+      throw new BadRequest();
+    }
+
+    await db.transaction().execute(async (trx) => {
+      await Promise.all([
+        friendRequestRepository.deleteRequest(id, trx),
+        friendRepository.create({ userId: friendRequest.requestor, userTwoId: friendRequest.target_user }, trx),
+      ]);
+    });
   }
 }
 

@@ -7,8 +7,9 @@
     "dev": "tsx watch src/server.ts",
     "eslint": "eslint . --max-warnings 0",
     "typecheck": "tsc",
-    "generate:schema": "kysely-codegen --out-file=src/common/database/types.ts",
-    "migrate": "docker compose down && docker compose up -d"
+    "generate:schema": "kysely-codegen --out-file=src/common/database/generated-types.ts",
+    "migrate": "tsx src/common/database/migrate-to-latest.ts",
+    "db:up": "docker compose down && docker compose up -d"
   },
   "keywords": [],
   "author": "",

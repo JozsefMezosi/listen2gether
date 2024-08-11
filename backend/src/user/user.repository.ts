@@ -3,13 +3,13 @@ import { FindUserParams, NewUser } from './model';
 
 class UserRepository {
   createUser(newUser: NewUser) {
-    return db.insertInto('users').values(newUser).executeTakeFirst();
+    return db.insertInto('user').values(newUser).executeTakeFirst();
   }
 
   findUser({ email, id }: FindUserParams) {
     const filterValue = email ?? id;
     return db
-      .selectFrom('users')
+      .selectFrom('user')
       .selectAll()
       .where(email ? 'email' : 'id', '=', filterValue)
       .executeTakeFirst();
