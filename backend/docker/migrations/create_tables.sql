@@ -5,6 +5,12 @@ CREATE TABLE Users (
     user_name VARCHAR(256) NOT NULL
 );
 
+CREATE TABLE Friend_Requests (
+    requestor INTEGER NOT NULL,
+    target_user INTEGER NOT NULL,
+    created_at timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY(requestor, target_user)
+);
 
 -- DO NOT REMOVE
 -- MUST BE THE LAST STATEMENT IN THIS FILE

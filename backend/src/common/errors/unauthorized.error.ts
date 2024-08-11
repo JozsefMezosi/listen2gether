@@ -1,4 +1,4 @@
-import { HTTP_STATUS_CODES } from '../http';
+import { HTTP_STATUS_CODES } from '../model';
 import { ApiError } from './api.error';
 
 export class Unauthorized extends ApiError {

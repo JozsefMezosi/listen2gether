@@ -1,6 +1,7 @@
 import { NextFunction, Response, Request } from 'express';
 import { logger } from '../logger';
-import { ApiError, HTTP_STATUS_CODES } from '../model';
+import { HTTP_STATUS_CODES } from '../model';
+import { ApiError } from '../errors';
 
 export const handleServerError = (error: Error, _: Request, res: Response, next: NextFunction) => {
   console.log({ error });

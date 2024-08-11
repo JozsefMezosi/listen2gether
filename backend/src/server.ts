@@ -1,9 +1,10 @@
 import express from 'express';
 import compression from 'compression';
 import cors from 'cors';
-import { checkEnvironmentVariables, handleNotFound, handleServerError, logger } from './common';
+import { auth, checkEnvironmentVariables, handleNotFound, handleServerError, logger } from './common';
 import { authRouter } from './auth/auth.routes';
 import cookieParser from 'cookie-parser';
+import { friendRouter } from './friend/friend.routes';
 checkEnvironmentVariables();
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(compression());
 app.use(cookieParser());
 
 app.use('/auth', authRouter);
+app.use('/friend', auth, friendRouter);
 
 app.use(handleNotFound);
 app.use(handleServerError);

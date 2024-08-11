@@ -4,3 +4,5 @@ export * from './model';
 export * from './logger';
 export * from './middlewares';
 export * from './environment-variables';
+export * from './utils';
+export * from './errors';

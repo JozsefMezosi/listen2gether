@@ -1,4 +1,4 @@
-import { ApiError, HTTP_STATUS_CODES, Unauthorized } from '../common';
+import { Unauthorized } from '../common';
 import { userRepository } from '../user/user.repository';
 import { HASH_SALT } from './constants';
 import { LoginUserRequest, LoginUserResponse } from './model';
@@ -8,7 +8,6 @@ import { createAuthTokens } from './utils';
 import { NewUser } from '../user/model';
 import { validateUserRegistrationData } from './validators';
 import { createAuthToken } from './utils/create-jwt-token';
-import { ref } from 'joi';
 
 class AuthService {
   async registerUser({ password, ...restUser }: NewUser) {
@@ -19,7 +18,7 @@ class AuthService {
   }
 
   async loginUser({ email, password }: LoginUserRequest): Promise<LoginUserResponse> {
-    const user = await userRepository.findUser(email);
+    const user = await userRepository.findUser({ email });
 
     if (!user) {
       throw new Unauthorized();
@@ -46,7 +45,7 @@ class AuthService {
       throw new Unauthorized();
     }
 
-    const user = await userRepository.findUser(payload.email);
+    const user = await userRepository.findUser({ email: payload.email });
 
     if (!user) {
       throw new Unauthorized();
