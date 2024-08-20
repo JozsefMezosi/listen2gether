@@ -1,27 +1,40 @@
-import { Request, Response } from 'express';
-import { Controller } from '../common';
-import { AUTH_TOKEN, REFRESH_TOKEN } from './constants';
-import { authService } from './auth.service';
+import { Body, Controller, Post, Res } from '@nestjs/common';
+import { Response } from 'express';
+import { AuthService } from './auth.service';
+import { RegisterUserDto } from './model/register-user.dto';
+import { LoginUserDto, LoginUserResponse } from './model/login-user.dto';
+import { ACCESS_TOKEN_KEY } from './constants';
+import { ConfigService } from '@nestjs/config';
+import { Config } from 'src/config/config.model';
 
-@Controller
-class AuthController {
-  async login(req: Request, res: Response) {
-    const {
-      tokens: { authToken, refreshToken },
-      user,
-    } = await authService.loginUser(req.body);
+@Controller('auth')
+export class AuthController {
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService<Config>,
+  ) {}
 
-    res.cookie(AUTH_TOKEN, authToken.token, { httpOnly: true, secure: true, expires: authToken.expires });
-    res.cookie(REFRESH_TOKEN, refreshToken.token, { httpOnly: true, secure: true, expires: refreshToken.expires });
-
-    res.json(user);
+  @Post('register')
+  async registerUser(
+    @Body() registerUserDto: RegisterUserDto,
+  ): Promise<string> {
+    await this.authService.registerUser(registerUserDto);
+    return 'User created';
   }
 
-  async registerUser(req: Request, res: Response) {
-    await authService.registerUser(req.body);
+  @Post('login')
+  async loginUser(
+    @Body() loginUserDto: LoginUserDto,
+    @Res({ passthrough: true }) response: Response,
+  ): Promise<LoginUserResponse['user']> {
+    const { access_token, user } = await this.authService.loginUser(
+      loginUserDto,
+    );
 
-    res.json({ message: 'User successfully registered.' });
+    response.cookie(ACCESS_TOKEN_KEY, access_token, {
+      httpOnly: true,
+      maxAge: this.configService.get('JWT_TOKEN_EXP_IN_SECONDS') * 1000,
+    });
+    return user;
   }
 }
-
-export const authController = new AuthController();

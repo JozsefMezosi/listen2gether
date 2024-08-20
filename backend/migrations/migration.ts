@@ -1,30 +1,12 @@
-import { Kysely, sql } from 'kysely';
+import { Kysely } from 'kysely';
+import { createUserTable } from './create-user-table';
+import { createFriendRequestTable } from './create-friend-request-table';
+import { createFriendTable } from './create-friend-table';
 
 export async function up(db: Kysely<unknown>): Promise<void> {
-  await db.schema
-    .createTable('user')
-    .addColumn('id', 'serial', (col) => col.primaryKey())
-    .addColumn('email', 'varchar', (col) => col.notNull().unique())
-    .addColumn('password', 'varchar', (col) => col.notNull())
-    .addColumn('user_name', 'varchar(50)', (col) => col.notNull())
-    .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-    .execute();
-
-  await db.schema
-    .createTable('friend_request')
-    .addColumn('id', 'serial', (col) => col.primaryKey())
-    .addColumn('requestor', 'integer', (col) => col.references('user.id').notNull())
-    .addColumn('target_user', 'integer', (col) => col.references('user.id').notNull())
-    .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-    .execute();
-
-  await db.schema
-    .createTable('friend')
-    .addColumn('id', 'serial', (col) => col.primaryKey())
-    .addColumn('user_1', 'integer', (col) => col.references('user.id').notNull())
-    .addColumn('user_2', 'integer', (col) => col.references('user.id').notNull())
-    .addColumn('created_at', 'timestamp', (col) => col.defaultTo(sql`now()`).notNull())
-    .execute();
+  await createUserTable(db);
+  await createFriendRequestTable(db);
+  await createFriendTable(db);
 }
 
 export async function down(db: Kysely<unknown>): Promise<void> {

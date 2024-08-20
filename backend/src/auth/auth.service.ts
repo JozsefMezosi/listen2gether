@@ -1,64 +1,42 @@
-import { Unauthorized } from '../common';
-import { userRepository } from '../user/user.repository';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { RegisterUserDto } from './model/register-user.dto';
+import { UserRepository } from 'src/user/user-repository';
+import { LoginUserDto, LoginUserResponse } from './model/login-user.dto';
 import { HASH_SALT } from './constants';
-import { LoginUserRequest, LoginUserResponse } from './model';
-import jwt from 'jsonwebtoken';
-import { hash, compare } from 'bcrypt';
-import { createAuthTokens } from './utils';
-import { NewUser } from '../user/model';
-import { validateUserRegistrationData } from './validators';
-import { createAuthToken } from './utils/create-jwt-token';
-
-class AuthService {
-  async registerUser({ password, ...restUser }: NewUser) {
-    await validateUserRegistrationData({ password, ...restUser });
-    const hashedPassword = await hash(password, HASH_SALT);
-
-    await userRepository.createUser({ ...restUser, password: hashedPassword });
+import { compare, hash } from 'bcrypt';
+import { JwtService } from '@nestjs/jwt';
+@Injectable()
+export class AuthService {
+  constructor(
+    private readonly userRepository: UserRepository,
+    private readonly jwtService: JwtService,
+  ) {}
+  async registerUser(registerUserDto: RegisterUserDto) {
+    const hashedPassword = await hash(registerUserDto.password, HASH_SALT);
+    return this.userRepository.createUser({
+      ...registerUserDto,
+      password: hashedPassword,
+    });
   }
 
-  async loginUser({ email, password }: LoginUserRequest): Promise<LoginUserResponse> {
-    const user = await userRepository.findUser({ email });
+  async loginUser({
+    email,
+    password,
+  }: LoginUserDto): Promise<LoginUserResponse> {
+    const user = await this.userRepository.findUser({ email });
 
     if (!user) {
-      throw new Unauthorized();
+      throw new UnauthorizedException();
     }
 
     if (!(await compare(password, user.password))) {
-      throw new Unauthorized();
+      throw new UnauthorizedException();
     }
 
+    const payload = { sub: user.id, email: user.email };
     return {
-      tokens: createAuthTokens({ email }),
+      access_token: await this.jwtService.signAsync(payload),
       user: { email: user.email, id: user.id },
     };
   }
-
-  async getUserFromToken(token: string | undefined) {
-    if (!token) {
-      throw new Unauthorized();
-    }
-
-    const payload = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (typeof payload === 'string') {
-      throw new Unauthorized();
-    }
-
-    const user = await userRepository.findUser({ email: payload.email });
-
-    if (!user) {
-      throw new Unauthorized();
-    }
-
-    return user;
-  }
-  async refreshToken(refreshToken: string | undefined) {
-    const user = await this.getUserFromToken(refreshToken);
-    return {
-      authToken: createAuthToken({ email: user.email }, new Date()),
-      user,
-    };
-  }
 }
-export const authService = new AuthService();
