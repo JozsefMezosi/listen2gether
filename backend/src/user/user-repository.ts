@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Database } from 'src/database';
-import { NewUser, FindUserParams } from './model';
+import { NewUser, FindUserParams, SetAccessTokenParams } from './model';
 
 @Injectable()
 export class UserRepository {
@@ -20,5 +20,13 @@ export class UserRepository {
   }
   async exists(params: FindUserParams) {
     return Boolean(await this.findUser(params));
+  }
+
+  setAccessToken({ token, userId }: SetAccessTokenParams) {
+    return this.database
+      .updateTable('user')
+      .set({ access_token: token })
+      .where('id', '=', userId)
+      .executeTakeFirst();
   }
 }

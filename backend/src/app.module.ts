@@ -5,7 +5,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
-import { CONFIG_SCHEMA } from './config/config.schame';
+import { CONFIG_SCHEMA } from './config/config.schema';
 import { loadConfig } from './config/load-config';
 
 @Module({

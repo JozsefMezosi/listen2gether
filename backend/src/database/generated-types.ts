@@ -21,6 +21,7 @@ export interface FriendRequest {
 }
 
 export interface User {
+  access_token: string | null;
   created_at: Generated<Timestamp>;
   email: string;
   id: Generated<number>;

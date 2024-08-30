@@ -12,5 +12,6 @@ export class LoginUserDto {
 
 export interface LoginUserResponse {
   user: Pick<User, 'id' | 'email'>;
+  spotifyAccessTokenFilled: boolean;
   access_token: string;
 }

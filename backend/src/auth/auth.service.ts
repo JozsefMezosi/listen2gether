@@ -5,6 +5,9 @@ import { LoginUserDto, LoginUserResponse } from './model/login-user.dto';
 import { HASH_SALT } from './constants';
 import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
+import { SetAccessTokenForUserDTO } from './model/set-access-token-for-user.model';
+import { UserId } from 'src/user/model';
+import { encrypt } from 'src/common/utils/encode-decode';
 @Injectable()
 export class AuthService {
   constructor(
@@ -35,8 +38,17 @@ export class AuthService {
 
     const payload = { sub: user.id, email: user.email };
     return {
+      spotifyAccessTokenFilled: Boolean(user.access_token),
       access_token: await this.jwtService.signAsync(payload),
       user: { email: user.email, id: user.id },
     };
+  }
+
+  async setAccessTokenForUser(
+    { code }: SetAccessTokenForUserDTO,
+    userId: UserId,
+  ) {
+    console.log({ code });
+    await this.userRepository.setAccessToken({ token: encrypt(code), userId });
   }
 }

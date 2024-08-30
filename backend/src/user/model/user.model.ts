@@ -8,3 +8,8 @@ export type UserId = User['id'];
 export type FindUserParams =
   | { email: string; id?: undefined }
   | { email?: undefined; id: UserId };
+
+export interface SetAccessTokenParams {
+  userId: UserId;
+  token: string;
+}

@@ -7,7 +7,8 @@ import { useCallback, useState } from "react";
 import { Button } from "../ui/button";
 import { Form } from "../ui/form";
 import { Input } from "../ui/input";
-import { ApiError, fetchApi } from "@/api";
+import { fetchApi } from "@/api";
+import { useRouter } from "next/navigation";
 
 export const RegisterPage = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -15,24 +16,30 @@ export const RegisterPage = () => {
     resolver: zodResolver(registerFormSchema),
   });
 
-  const onSubmit = useCallback(async (values: RegisterUser) => {
-    setIsLoading(true);
-    const response = await fetchApi("/auth/register", {
-      method: "POST",
-      body: JSON.stringify(values),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+  const router = useRouter();
 
-    if (!response.ok) {
-      const { message } = (await response.json()) as ApiError;
-      console.log(message);
-      //todo alert
-    }
+  const onSubmit = useCallback(
+    async (data: RegisterUser) => {
+      try {
+        setIsLoading(true);
+        await fetchApi("/auth/register", {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        router.push("/");
+      } catch (error) {
+        //todo alert
+        console.log({ error });
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [router]
+  );
 
-    setIsLoading(false);
-  }, []);
   return (
     <div className="grid justify-items-center content-center h-screen">
       <Form {...form}>
