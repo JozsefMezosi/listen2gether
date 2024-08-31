@@ -9,17 +9,17 @@ import { CONFIG_SCHEMA } from './config/config.schema';
 import { loadConfig } from './config/load-config';
 
 @Module({
-  imports: [
-    AuthModule,
-    UserModule,
-    DatabaseModule,
-    ConfigModule.forRoot({
-      isGlobal: true,
-      validationSchema: CONFIG_SCHEMA,
-      load: [loadConfig],
-    }),
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+    imports: [
+        AuthModule,
+        UserModule,
+        DatabaseModule,
+        ConfigModule.forRoot({
+            isGlobal: true,
+            validationSchema: CONFIG_SCHEMA,
+            load: [loadConfig],
+        }),
+    ],
+    controllers: [AppController],
+    providers: [AppService],
 })
 export class AppModule {}

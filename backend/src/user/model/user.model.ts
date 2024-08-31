@@ -6,10 +6,15 @@ export type NewUser = Insertable<UserTable>;
 export type User = Selectable<UserTable>;
 export type UserId = User['id'];
 export type FindUserParams =
-  | { email: string; id?: undefined }
-  | { email?: undefined; id: UserId };
+    | { email: string; id?: undefined }
+    | { email?: undefined; id: UserId };
 
 export interface SetAccessTokenParams {
-  userId: UserId;
-  token: string;
+    userId: UserId;
+    token: string;
+}
+
+export interface SetSpotifyStateParams {
+    state: string;
+    userId: UserId;
 }

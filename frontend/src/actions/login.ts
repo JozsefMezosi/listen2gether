@@ -1,22 +1,20 @@
 "use server";
 
+import { api } from "@/api";
 import { LoginUser } from "@/components/login/login-form-schema";
+import { log } from "console";
 import { redirect } from "next/navigation";
 
 export async function login(dto: LoginUser) {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/auth/login`,
-    {
-      method: "POST",
-      body: JSON.stringify(dto),
+    const response = await api.auth.authControllerLoginUser(dto, {
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+    });
 
-      headers: {
-        "Content-Type": "application/json",
-      },
-      credentials: "include",
-    },
-  );
-  if (response.redirected) {
-    redirect(response.url);
-  }
+    log({ response });
+    if (response.redirected) {
+        redirect(response.url);
+    }
+
+    return response.json();
 }

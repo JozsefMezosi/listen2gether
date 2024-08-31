@@ -2,17 +2,17 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { UserRepository } from './user-repository';
 
 describe('User', () => {
-  let provider: UserRepository;
+    let provider: UserRepository;
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [UserRepository],
-    }).compile();
+    beforeEach(async () => {
+        const module: TestingModule = await Test.createTestingModule({
+            providers: [UserRepository],
+        }).compile();
 
-    provider = module.get<UserRepository>(UserRepository);
-  });
+        provider = module.get<UserRepository>(UserRepository);
+    });
 
-  it('should be defined', () => {
-    expect(provider).toBeDefined();
-  });
+    it('should be defined', () => {
+        expect(provider).toBeDefined();
+    });
 });

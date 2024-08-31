@@ -10,17 +10,17 @@ import { Config } from 'src/config/config.model';
 export type Database = Kysely<DB>;
 
 export const DatabaseProviders = {
-  provide: DATABASE_KEY,
-  inject: [ConfigService],
-  useFactory: (configService: ConfigService<Config>): Database => {
-    return new Kysely<DB>({
-      dialect: new PostgresDialect({
-        pool: new Pool({
-          connectionString: configService.get('DATABASE_URL'),
-        }),
-      }),
-    });
-  },
+    provide: DATABASE_KEY,
+    inject: [ConfigService],
+    useFactory: (configService: ConfigService<Config>): Database => {
+        return new Kysely<DB>({
+            dialect: new PostgresDialect({
+                pool: new Pool({
+                    connectionString: configService.get('DATABASE_URL'),
+                }),
+            }),
+        });
+    },
 };
 
 export const Database = () => Inject(DATABASE_KEY);

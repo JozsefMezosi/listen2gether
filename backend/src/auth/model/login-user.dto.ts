@@ -1,17 +1,29 @@
 import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
-import { User } from 'src/user/model';
+import { ApiProperty } from '@nestjs/swagger';
 
 export class LoginUserDto {
-  @IsEmail()
-  email: string;
+    @ApiProperty()
+    @IsEmail()
+    email: string;
 
-  @IsString()
-  @IsNotEmpty()
-  password: string;
+    @ApiProperty()
+    @IsString()
+    @IsNotEmpty()
+    password: string;
 }
 
+export class LoginUserResponseUser {
+    @ApiProperty()
+    id: number;
+
+    @ApiProperty()
+    email: string;
+
+    @ApiProperty()
+    expires: Date;
+}
 export interface LoginUserResponse {
-  user: Pick<User, 'id' | 'email'>;
-  spotifyAccessTokenFilled: boolean;
-  access_token: string;
+    user: LoginUserResponseUser;
+    spotifyAccessTokenFilled: boolean;
+    access_token: string;
 }
