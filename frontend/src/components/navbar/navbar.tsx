@@ -1,24 +1,21 @@
-import {
-    NavigationMenu,
-    NavigationMenuItem,
-    NavigationMenuList,
-    NavigationMenuTrigger,
-} from "../ui/navigation-menu";
+"use client";
 import Link from "next/link";
-
+import { RightNavGroup } from "./right-nav-group";
+import { usePathname } from "next/navigation";
+import { publicPages } from "@/models/public-pages";
 export const Navbar = () => {
+    const pathName = usePathname();
+    if (publicPages.includes(pathName)) {
+        return null;
+    }
+
     return (
-        <div className="py-2 border-b ">
-            <NavigationMenu>
-                <NavigationMenuList>
-                    <NavigationMenuItem>
-                        <NavigationMenuTrigger>
-                            {" "}
-                            <Link href="/">Rooms</Link>
-                        </NavigationMenuTrigger>
-                    </NavigationMenuItem>
-                </NavigationMenuList>
-            </NavigationMenu>
-        </div>
+        <nav className="p-4 border-b flex items-center justify-between">
+            <div>
+                <Link href="/">Rooms</Link>
+            </div>
+
+            <RightNavGroup />
+        </nav>
     );
 };

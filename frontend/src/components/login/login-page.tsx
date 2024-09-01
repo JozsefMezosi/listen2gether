@@ -14,6 +14,7 @@ export const LoginPage = () => {
     const [isLoading, setIsLoading] = useState(false);
     const form = useForm<LoginUser>({
         resolver: zodResolver(loginFormSchema),
+        defaultValues: { email: "", password: "" },
     });
     const router = useRouter();
 

@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-
-const pulbicPages = ["/login", "/register"];
+import { publicPages } from "./models/public-pages";
 
 export async function middleware(request: NextRequest) {
     const { nextUrl, url, cookies } = request;
 
     const user = cookies.get("user");
-    const isProtected = !pulbicPages.includes(nextUrl.pathname);
+    const isProtected = !publicPages.includes(nextUrl.pathname);
     if (!isProtected && user) {
         return NextResponse.redirect(new URL("/", url));
     }

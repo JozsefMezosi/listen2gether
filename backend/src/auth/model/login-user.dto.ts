@@ -12,10 +12,15 @@ export class LoginUserDto {
     password: string;
 }
 
-export interface UserResponse {
+export class UserResponse {
+    @ApiProperty()
     id: number;
 
+    @ApiProperty()
     email: string;
+
+    @ApiProperty()
+    name: string;
 }
 
 export class LoginUserResposne {

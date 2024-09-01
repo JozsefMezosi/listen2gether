@@ -32,6 +32,12 @@ export interface LoginUserResposne {
     redirectTo: string;
 }
 
+export interface UserResponse {
+    id: number;
+    email: string;
+    name: string;
+}
+
 export type QueryParamsType = Record<string | number, any>;
 export type ResponseFormat = keyof Omit<Body, "body" | "bodyUsed">;
 
