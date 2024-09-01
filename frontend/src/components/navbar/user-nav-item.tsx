@@ -1,13 +1,12 @@
 "use client";
 
-import { getUser } from "@/utils/get-user";
 import Link from "next/link";
+import { UserName } from "./user-name";
 
 export const UserNavItem = () => {
-    const { name } = getUser();
     return (
         <Link href="/profile" className="flex gap-2 items-center">
-            <p>{name}</p>
+            <UserName />
             <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="none"
