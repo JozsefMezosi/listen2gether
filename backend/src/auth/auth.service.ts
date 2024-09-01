@@ -1,17 +1,19 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import * as querystring from 'querystring';
 import { RegisterUserDto } from './model/register-user.dto';
-import { UserRepository } from 'src/user/user-repository';
-import { LoginUserDto, LoginUserResponse } from './model/login-user.dto';
-import { HASH_SALT } from './constants';
+import { UserRepository } from 'src/user/user.repository';
+import { LoginUserDto, LoginUserSerivceResponse } from './model/login-user.dto';
+import { HASH_SALT, SCOPES } from './constants';
 import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { SetAccessTokenForUserDTO } from './model/set-access-token-for-user.model';
-import { SetSpotifyStateParams, UserId } from 'src/user/model';
+import { UserId } from 'src/user/model';
 import { encrypt } from 'src/common/utils/encode-decode';
-import { getExprationDate } from './utils/get-expiration-date';
 import { ConfigService } from '@nestjs/config';
 import { Config } from 'src/config/config.model';
 import { Database } from 'src/database';
+import { SpotifyStateRepository } from 'src/spotify-state/spotify-state.repository';
+import { generateRandomString } from 'src/common/utils/generate-random-string';
 
 @Injectable()
 export class AuthService {
@@ -19,6 +21,7 @@ export class AuthService {
         private readonly userRepository: UserRepository,
         private readonly jwtService: JwtService,
         private readonly configService: ConfigService<Config>,
+        private readonly spotifyStateRepository: SpotifyStateRepository,
         @Database() private readonly database: Database,
     ) {}
     async registerUser(registerUserDto: RegisterUserDto) {
@@ -32,29 +35,40 @@ export class AuthService {
     async loginUser({
         email,
         password,
-    }: LoginUserDto): Promise<LoginUserResponse> {
+    }: LoginUserDto): Promise<LoginUserSerivceResponse> {
         const user = await this.userRepository.findUser({ email });
 
-        if (!user) {
-            throw new UnauthorizedException();
-        }
-
-        if (!(await compare(password, user.password))) {
+        if (!user || !(await compare(password, user.password))) {
             throw new UnauthorizedException();
         }
 
         const payload = { sub: user.id, email: user.email };
-        return {
-            spotifyAccessTokenFilled: Boolean(user.access_token),
+        const response: LoginUserSerivceResponse = {
             access_token: await this.jwtService.signAsync(payload),
             user: {
-                expires: getExprationDate(
-                    this.configService.get('JWT_TOKEN_EXP_IN_SECONDS'),
-                ),
                 email: user.email,
                 id: user.id,
             },
         };
+
+        if (user.access_token) return response;
+
+        const state = await this.getOrCreateSpotifyStateForUser(user.id);
+
+        const client_id = this.configService.get('CLIENT_ID');
+        const apiUrl = this.configService.get('URL');
+
+        response.redirectTo = `https://accounts.spotify.com/authorize?${querystring.stringify(
+            {
+                response_type: 'code',
+                client_id: client_id,
+                scope: SCOPES,
+                redirect_uri: `${apiUrl}/auth/callback`,
+                state: state,
+            },
+        )}`;
+
+        return response;
     }
 
     async setAccessTokenForUser(
@@ -70,23 +84,27 @@ export class AuthService {
                     },
                     trx,
                 ),
-                this.userRepository.deleteSpotifyState(userId, trx),
+                this.spotifyStateRepository.deleteSpotifyState(userId, trx),
             ]);
         });
     }
 
-    async saveSpotifyState({ state, userId }: SetSpotifyStateParams) {
-        const exists = await this.userRepository.isSpotifyStateExistsForUser(
-            userId,
-        );
-        if (exists) return;
-        await this.userRepository.setSpotifyState({
+    async getOrCreateSpotifyStateForUser(userId: UserId) {
+        const stateInDatabase =
+            await this.spotifyStateRepository.getSpotifyStateByUserId(userId);
+        if (stateInDatabase) return stateInDatabase.state;
+
+        const state = generateRandomString(16);
+        await this.spotifyStateRepository.setSpotifyState({
             userId,
             state: encrypt(state),
         });
+        return state;
     }
 
-    async getSpotifyState(state: string) {
-        return this.userRepository.getSpotifyState(encrypt(state));
+    async getSpotifyStateByState(state: string) {
+        return this.spotifyStateRepository.getSpotifyStateByState(
+            encrypt(state),
+        );
     }
 }

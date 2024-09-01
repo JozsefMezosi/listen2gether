@@ -28,11 +28,8 @@ export interface LoginUserDto {
     password: string;
 }
 
-export interface LoginUserResponseUser {
-    id: number;
-    email: string;
-    /** @format date-time */
-    expires: string;
+export interface LoginUserResposne {
+    redirectTo: string;
 }
 
 export type QueryParamsType = Record<string | number, any>;
@@ -293,7 +290,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
          * @request POST:/auth/login
          */
         authControllerLoginUser: (data: LoginUserDto, params: RequestParams = {}) =>
-            this.request<LoginUserResponseUser, any>({
+            this.request<LoginUserResposne, any>({
                 path: `/auth/login`,
                 method: "POST",
                 body: data,

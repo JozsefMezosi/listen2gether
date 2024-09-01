@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
 import { CONFIG_SCHEMA } from './config/config.schema';
 import { loadConfig } from './config/load-config';
+import { SpotifyStateModule } from './spotify-state/spotify-state.module';
 
 @Module({
     imports: [
@@ -18,6 +19,7 @@ import { loadConfig } from './config/load-config';
             validationSchema: CONFIG_SCHEMA,
             load: [loadConfig],
         }),
+        SpotifyStateModule,
     ],
     controllers: [AppController],
     providers: [AppService],

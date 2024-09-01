@@ -1,13 +1,17 @@
 import 'dotenv/config';
-import { Kysely, PostgresDialect } from 'kysely';
+import {
+    Kysely,
+    PostgresDialect,
+    Transaction as KyselyTransaction,
+} from 'kysely';
 import { Pool } from 'pg';
 import { DB } from './generated-types';
 import { DATABASE_KEY } from './constants';
 import { Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Config } from 'src/config/config.model';
-
 export type Database = Kysely<DB>;
+export type Transaction = KyselyTransaction<DB>;
 
 export const DatabaseProviders = {
     provide: DATABASE_KEY,

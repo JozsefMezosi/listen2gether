@@ -6,7 +6,7 @@ import {
     ValidatorConstraint,
     ValidatorConstraintInterface,
 } from 'class-validator';
-import { UserRepository } from '../user-repository';
+import { UserRepository } from '../user.repository';
 import { MapKeysToSelf } from 'src/common/model/map-keys-to-self';
 
 export const ThrowErrorIfUser = {

@@ -77,7 +77,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
                             cx="12"
                             cy="12"
                             r="10"
-                            stroke-width="4"
+                            strokeWidth="4"
                         ></circle>
                         <path
                             className="opacity-75 fill-black"

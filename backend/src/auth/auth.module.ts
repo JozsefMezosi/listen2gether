@@ -7,9 +7,11 @@ import { ConfigModule } from '@nestjs/config';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth.guard';
 import { DatabaseModule } from 'src/database/database.module';
+import { SpotifyStateModule } from 'src/spotify-state/spotify-state.module';
 @Module({
     imports: [
         DatabaseModule,
+        SpotifyStateModule,
         UserModule,
         ConfigModule,
         JwtModule.register({

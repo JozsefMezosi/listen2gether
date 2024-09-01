@@ -14,7 +14,7 @@ export interface SetAccessTokenParams {
     token: string;
 }
 
-export interface SetSpotifyStateParams {
+export interface GetSpotifyStateForUserParams {
     state: string;
     userId: UserId;
 }

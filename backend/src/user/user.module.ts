@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { UserRepository } from './user-repository';
+import { UserRepository } from './user.repository';
 import { DatabaseModule } from 'src/database/database.module';
 import { IsUserExistsConstraint } from './decorators/is-user-exists';
 

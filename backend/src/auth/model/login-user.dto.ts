@@ -12,18 +12,19 @@ export class LoginUserDto {
     password: string;
 }
 
-export class LoginUserResponseUser {
-    @ApiProperty()
+export interface UserResponse {
     id: number;
 
-    @ApiProperty()
     email: string;
-
-    @ApiProperty()
-    expires: Date;
 }
-export interface LoginUserResponse {
-    user: LoginUserResponseUser;
-    spotifyAccessTokenFilled: boolean;
+
+export class LoginUserResposne {
+    @ApiProperty()
+    redirectTo?: string;
+}
+
+export interface LoginUserSerivceResponse {
+    user: UserResponse;
     access_token: string;
+    redirectTo?: string;
 }
