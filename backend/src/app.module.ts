@@ -8,6 +8,7 @@ import { ConfigModule } from '@nestjs/config';
 import { CONFIG_SCHEMA } from './config/config.schema';
 import { loadConfig } from './config/load-config';
 import { SpotifyStateModule } from './spotify-state/spotify-state.module';
+import { RoomsModule } from './rooms/rooms.module';
 
 @Module({
     imports: [
@@ -20,6 +21,7 @@ import { SpotifyStateModule } from './spotify-state/spotify-state.module';
             load: [loadConfig],
         }),
         SpotifyStateModule,
+        RoomsModule,
     ],
     controllers: [AppController],
     providers: [AppService],

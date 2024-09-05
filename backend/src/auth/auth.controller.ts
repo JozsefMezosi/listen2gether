@@ -10,8 +10,6 @@ import {
 } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './auth.service';
-import { RegisterUserDto } from './model/register-user.dto';
-import { LoginUserDto, LoginUserResposne } from './model/login-user.dto';
 import { ACCESS_TOKEN_KEY, USER_COOKIE_KEY } from './constants';
 import { ConfigService } from '@nestjs/config';
 import { Config, Environments } from 'src/config/config.model';
@@ -21,6 +19,8 @@ import { SetAccessTokenForUserDTO } from './model/set-access-token-for-user.mode
 import { ApiResponse } from '@nestjs/swagger';
 import { HTTP_STATUS_CODES } from 'src/common/model/http-status-codes';
 import { decrypt } from 'src/common/utils/encode-decode';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { LoginUserDto, LoginUserResposne } from './dto/login-user.dto';
 
 @Controller('auth')
 export class AuthController {

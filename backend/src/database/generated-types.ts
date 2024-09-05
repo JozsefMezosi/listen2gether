@@ -6,6 +6,14 @@ export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export interface Room {
+    created_at: Generated<Timestamp>;
+    id: Generated<number>;
+    name: string;
+    owner_id: number;
+    public: boolean;
+}
+
 export interface SpotifyState {
     state: string;
     user_id: number;
@@ -21,6 +29,7 @@ export interface User {
 }
 
 export interface DB {
+    room: Room;
     spotify_state: SpotifyState;
     user: User;
 }

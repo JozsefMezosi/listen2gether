@@ -27,9 +27,3 @@ export class LoginUserResposne {
     @ApiProperty()
     redirectTo?: string;
 }
-
-export interface LoginUserSerivceResponse {
-    user: UserResponse;
-    access_token: string;
-    redirectTo?: string;
-}

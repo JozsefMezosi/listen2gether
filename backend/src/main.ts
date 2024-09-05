@@ -6,7 +6,7 @@ import { UserModule } from './user/user.module';
 import * as cookieParser from 'cookie-parser';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ACCESS_TOKEN_KEY } from './auth/constants';
-import { UserResponse } from './auth/model/login-user.dto';
+import { UserResponse } from './auth/dto/login-user.dto';
 
 async function bootstrap() {
     const app = await NestFactory.create(AppModule, {

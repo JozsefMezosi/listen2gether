@@ -1,8 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import * as querystring from 'querystring';
-import { RegisterUserDto } from './model/register-user.dto';
 import { UserRepository } from 'src/user/user.repository';
-import { LoginUserDto, LoginUserSerivceResponse } from './model/login-user.dto';
 import { HASH_SALT, SCOPES } from './constants';
 import { compare, hash } from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
@@ -14,6 +12,9 @@ import { Config } from 'src/config/config.model';
 import { Database } from 'src/database';
 import { SpotifyStateRepository } from 'src/spotify-state/spotify-state.repository';
 import { generateRandomString } from 'src/common/utils/generate-random-string';
+import { RegisterUserDto } from './dto/register-user.dto';
+import { LoginUserSerivceResponse } from './model/login-user.model';
+import { LoginUserDto } from './dto/login-user.dto';
 
 @Injectable()
 export class AuthService {
